@@ -1,8 +1,9 @@
 import express from 'express';
 import cors from 'cors'
 import dotenv from 'dotenv'
-
 import connectToDb from './config/db.js';
+import userRouter from './routes/User.routes.js';
+
 
 
 dotenv.config()
@@ -15,9 +16,7 @@ app.use(express.urlencoded({ extended: true }))
 const PORT = process.env.PORT || 3000
 
 
-app.get('/', (req, res) => {
-  res.send('Hello World!');
-}); 
+app.use("/api/users", userRouter);
 
 
 
