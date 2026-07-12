@@ -1,14 +1,19 @@
 import express from 'express';
 import cors from 'cors'
 import dotenv from 'dotenv'
-import connectDB from './config/db.js';
+
+import connectToDb from './config/db.js';
+
+
 dotenv.config()
 
 const app = express()
 app.use(cors())
 app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 
 const PORT = process.env.PORT || 3000
+
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
@@ -16,7 +21,11 @@ app.get('/', (req, res) => {
 
 
 
-app.listen(PORT , () => {
-    connectDB()
+
+
+
+
+app.listen(PORT ,  () => {
+   connectToDb()
   console.log(`Server is running on port ${PORT}`);
 });
