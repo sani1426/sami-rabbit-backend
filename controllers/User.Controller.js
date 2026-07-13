@@ -5,38 +5,38 @@ import Jwt from "jsonwebtoken";
 
 export const registerController = async (req, res) => {
   try {
-    // const { name, email, password} = req.body;
+    const { name, email, password} = req.body;
 
-    // if (!name || !email || !password) {
-    //   return res.status(400).json({
-    //     error: true,
-    //     success: false,
-    //     message: "all required fild must provide",
-    //   });
-    // }
-    // const already = await UserModel.find({ email });
-    // if (already) {
-    //   return res.status(400).json({
-    //     error: true,
-    //     success: false,
-    //     message: "User Already exists with the same email! Please try again",
-    //   });
-    // }
+    if (!name || !email || !password) {
+      return res.status(400).json({
+        error: true,
+        success: false,
+        message: "all required fild must provide",
+      });
+    }
+    const already = await UserModel.find({ email });
+    if (already) {
+      return res.status(400).json({
+        error: true,
+        success: false,
+        message: "User Already exists with the same email! Please try again",
+      });
+    }
 
-    // let hashedPassword = bcrypt.hashSync(password, 10);
+    let hashedPassword = bcrypt.hashSync(password, 10);
 
-    // const user = new UserModel({
-    //   name: name,
-    //   email: email,
-    //   password: hashedPassword,
-    // });
-    // const newUser = await user.save();
-    // res.status(201).json({
-    //   error: false,
-    //   success: true,
-    //   data: newUser,
-    //   message: "success",
-    // });
+    const user = new UserModel({
+      name: name,
+      email: email,
+      password: hashedPassword,
+    });
+    const newUser = await user.save();
+    res.status(201).json({
+      error: false,
+      success: true,
+      data: newUser,
+      message: "success",
+    });
     res.status(201).json({
       error: false,
       success: true,
