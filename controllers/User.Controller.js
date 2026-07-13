@@ -1,4 +1,5 @@
 import { genSalt } from "bcryptjs";
+import bcrypt from "bcryptjs";
 import userModel from "../models/User.model.js";
 import Jwt from "jsonwebtoken";
 
