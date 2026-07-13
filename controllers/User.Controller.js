@@ -24,17 +24,11 @@ export const registerController = async (req, res) => {
     // }
 
     let hashedPassword = bcrypt.hashSync(password, 10);
-    let avatar = "";
-    if (gender === "Men") {
-      avatar = "https://avatar.iran.liara.run/public/boy";
-    } else {
-      avatar = "https://avatar.iran.liara.run/public/girl";
-    }
+
     const user = new UserModel({
       name: name,
       email: email,
       password: hashedPassword,
-      avatar: avatar,
     });
     const newUser = await user.save();
     res.status(201).json({
