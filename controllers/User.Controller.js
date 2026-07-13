@@ -1,3 +1,4 @@
+import { genSalt } from "bcryptjs";
 import userModel from "../models/User.model.js";
 import Jwt from "jsonwebtoken";
 
@@ -20,7 +21,14 @@ export const registerUser = async (req, res) => {
         message: "User Already Exist",
        });
     }
-    user = new userModel({ name, email, password });
+    const salt = await genSalt(10)
+    const hashedPassword = await bcrypt.hash(password, salt)
+    user = new userModel({
+      name: name,
+      email: email,
+      password: hashedPassword,
+      role: "customer", // Default role is customer
+    });
     await user.save();
     return res.status(201).json({
       error: false,
