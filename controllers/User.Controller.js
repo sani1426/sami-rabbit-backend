@@ -7,20 +7,31 @@ export const registerUser = async (req, res) => {
   try {
     let user =await userModel.findOne({ email });
     if (user) {
-      return res.status(400).json({ error: "user Already exist" });
+      return res.status(400).json({ 
+        success: false,
+        error: true,
+        message: "User Already Exist",
+       });
     }
     user = new userModel({ name, email, password });
     await user.save();
     return res.status(201).json({
-      user: {
-        _id: user._id,
-        name: user.name,
+      error: false,
+      success: true,
+      data: {
+        _id : user._id,
+        name : user.name,
         email: user.email,
         role: user.role,
       },
+      message: "success",
     });
   } catch (error) {
     console.log(`Register User Faild :  ${error.message}`);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({
+      success: false,
+      error: true,
+      message: "Register User Faild",
+    });
   }
 };
