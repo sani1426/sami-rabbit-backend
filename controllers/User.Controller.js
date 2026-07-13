@@ -34,11 +34,10 @@ export const registerUser = async (req, res) => {
       message: "success",
     });
   } catch (error) {
-    console.log(`Register User Faild :  ${error.message}`);
     res.status(500).json({
       success: false,
       error: true,
-      message: "Register User Faild",
+      message: error,
     });
   }
 };
