@@ -1,52 +1,53 @@
-import { genSalt } from "bcryptjs";
-import bcrypt from "bcryptjs";
-import userModel from "../models/User.model.js";
+import bcrypt ,{ genSalt } from "bcryptjs";
+
+import UserModel from "../models/User.model.js";
 import Jwt from "jsonwebtoken";
 
-export const registerUser = async (req, res) => {
-
+export const registerController = async (req, res) => {
   try {
-      const { name, email, password } = req.body;
-      if (!name || !email || !password) {
-        return res.status(400).json({
-          error: true,
-          success: false,
-          message: "all required fild must provide",
-        });
-      }
-    let user = await  userModel.findOne({ email });
-    if (user) {
-      return res.status(400).json({ 
-        success: false,
+    const { name, email, password} = req.body;
+
+    if (!name || !email || !password) {
+      return res.status(400).json({
         error: true,
-        message: "User Already Exist",
-       });
+        success: false,
+        message: "all required fild must provide",
+      });
     }
-    const salt = await genSalt(10)
-    const hashedPassword = await bcrypt.hash(password, salt)
-    user = new userModel({
+    const already = await UserModel.findOne({ email });
+    if (already) {
+      return res.status(400).json({
+        error: true,
+        success: false,
+        message: "User Already exists with the same email! Please try again",
+      });
+    }
+
+    let hashedPassword = bcrypt.hashSync(password, 10);
+    let avatar = "";
+    if (gender === "Men") {
+      avatar = "https://avatar.iran.liara.run/public/boy";
+    } else {
+      avatar = "https://avatar.iran.liara.run/public/girl";
+    }
+    const user = new UserModel({
       name: name,
       email: email,
       password: hashedPassword,
-      role: "customer", // Default role is customer
+      avatar: avatar,
     });
-    await user.save();
-    return res.status(201).json({
+    const newUser = await user.save();
+    res.status(201).json({
       error: false,
       success: true,
-      data: {
-        _id : user._id,
-        name : user.name,
-        email: user.email,
-        role: user.role,
-      },
+      data: newUser,
       message: "success",
     });
   } catch (error) {
     res.status(500).json({
-      success: false,
       error: true,
-      message: error,
+      success: false,
+      message: `server error ${error}`,
     });
   }
 };

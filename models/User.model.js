@@ -24,13 +24,15 @@ const userSchema = new Schema({
         type: String ,
         enum: ["customer" , "admin"] ,
         default: "customer" ,
+    },
+    avatar : {
+        type: String 
     }
-
 }, {
     timestamps: true
 })
 
 
-const userModel = mongoose.model("User" , userSchema)
+const UserModel = mongoose.model("User" , userSchema)
 
-export default userModel
+export default UserModel
