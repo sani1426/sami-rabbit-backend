@@ -14,14 +14,14 @@ export const registerController = async (req, res) => {
         message: "all required fild must provide",
       });
     }
-    // const already = await UserModel.findOne({ email });
-    // if (already) {
-    //   return res.status(400).json({
-    //     error: true,
-    //     success: false,
-    //     message: "User Already exists with the same email! Please try again",
-    //   });
-    // }
+    const already = await UserModel.find({ email });
+    if (already) {
+      return res.status(400).json({
+        error: true,
+        success: false,
+        message: "User Already exists with the same email! Please try again",
+      });
+    }
 
     let hashedPassword = bcrypt.hashSync(password, 10);
 
