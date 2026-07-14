@@ -3,9 +3,9 @@ import bcrypt from "bcryptjs";
 import UserModel from "../models/User.model.js";
 import Jwt from "jsonwebtoken";
 
-export const registerController = async (req, res) => {
+const registerController = async (req, res) => {
   try {
-    const { name, email, password} = req.body;
+    const { name, email, password ,role} = req.body;
 
     if (!name || !email || !password) {
       return res.status(400).json({
@@ -51,3 +51,26 @@ export const registerController = async (req, res) => {
     });
   }
 };
+
+
+const getAllUsers = async (req, res) => {
+  try {
+    const allUsers = await UserModel.find();
+    res.status(200).json({
+      error: false,
+      success: true,
+      data: allUsers,
+      message: "success",
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: true,
+      success: false,
+      message: `server error ${error}`,
+    });
+    
+  }
+}
+
+
+export { registerController , getAllUsers  }
