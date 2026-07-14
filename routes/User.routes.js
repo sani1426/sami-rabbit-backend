@@ -1,5 +1,6 @@
 import express from 'express' ;
-import {  loginController, registerController } from '../controllers/User.Controller.js';
+import {  loginController, profileController,registerController } from '../controllers/User.Controller.js';
+import { Protect } from '../middlewares/authMiddleware.js';
 
 
 const userRouter = express.Router()
@@ -15,6 +16,12 @@ userRouter.post("/register", registerController);
 // @access Public
 
 userRouter.post("/login", loginController);
+
+// @route GET /api/users/profile
+// @desc Get Logged In user profile (Protected Route)
+// @access Private
+
+userRouter.get("/profile",Protect , profileController);
 
 
 
