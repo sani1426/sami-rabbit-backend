@@ -3,10 +3,12 @@ import bcrypt from "bcryptjs";
 import UserModel from "../models/User.model.js";
 import jwt from "jsonwebtoken";
 
-//  register controller
+
+//  @desc Register a new user
+//  @access Public
 const registerController = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password} = req.body;
 
     if (!name || !email || !password) {
       return res.status(400).json({
@@ -62,8 +64,9 @@ const registerController = async (req, res) => {
   }
 };
 
-//  login controller
 
+// @desc Login a user
+// @access Public
 const loginController = async (req , res) => {
 try {
   const {email , password} =req.body;
@@ -116,8 +119,8 @@ try {
 }
 }
 
-//  profile controller
-
+// @desc Get Logged In user profile (Protected Route)
+// @access Private
 const profileController = async (req , res) => {
 res.status(200).json({
   success: true,

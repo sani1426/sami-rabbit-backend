@@ -27,4 +27,17 @@ if(req.headers.authorization && req.headers.authorization.startsWith('Bearer')){
 }
 }
 
-export { Protect };
+//  middleware to check if user is admin
+const admin = async (req,res,next) => {
+    if(req.user && req.user.role === "Admin") {
+        next()
+    }else{
+        return res.status(403).json({
+            success: false,
+            error: true,
+            message: "Not Authorization as admin "
+        })  
+    }
+}
+
+export { Protect, admin };
