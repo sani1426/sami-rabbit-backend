@@ -1,6 +1,10 @@
 import express from "express";
 import { Protect, admin } from "../middlewares/authMiddleware.js";
-import { createNewProductController , updateProductController} from "../controllers/Product.Controller.js";
+import {
+  createNewProductController,
+  updateProductController,
+  deleteProductController,
+} from "../controllers/Product.Controller.js";
 
 const productRouter = express.Router();
 
@@ -13,6 +17,11 @@ productRouter.post("/", Protect,admin , createNewProductController);
 //  @desc Update a product
 //  @access Private/Admin
 productRouter.put("/:id", Protect , admin , updateProductController);
+
+//  @route DELETE /api/products/:id
+//  @desc Delete a product
+//  @access Private/Admin
+productRouter.delete("/:id", Protect, admin, deleteProductController);
 
 
 export default productRouter
