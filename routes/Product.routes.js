@@ -4,6 +4,7 @@ import {
   createNewProductController,
   updateProductController,
   deleteProductController,
+  getAllProductsController,
 } from "../controllers/Product.Controller.js";
 
 const productRouter = express.Router();
@@ -22,6 +23,12 @@ productRouter.put("/:id", Protect , admin , updateProductController);
 //  @desc Delete a product
 //  @access Private/Admin
 productRouter.delete("/:id", Protect, admin, deleteProductController);
+
+//  @route GET /api/products
+//  @desc Get all products with optional query filteres
+//  @access Public
+
+productRouter.get("/", getAllProductsController);
 
 
 export default productRouter

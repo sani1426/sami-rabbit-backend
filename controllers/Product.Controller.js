@@ -115,22 +115,20 @@ const updateProductController = async (req, res) => {
       goalProduct.weight = weight || goalProduct.weight;
       goalProduct.sku = sku || goalProduct.sku;
 
-       const updatedProduct = await goalProduct.save();
-       res.status(200).json({
-         success: true,
-         error: false,
-         message: "Product updated successfully",
-         data: updatedProduct,
-       });
-    }else{
+      const updatedProduct = await goalProduct.save();
+      res.status(200).json({
+        success: true,
+        error: false,
+        message: "Product updated successfully",
+        data: updatedProduct,
+      });
+    } else {
       res.status(404).json({
         success: false,
         error: true,
         message: "Product not found",
-      })
+      });
     }
-
-   
   } catch (error) {
     res.status(500).json({
       error: true,
@@ -140,37 +138,132 @@ const updateProductController = async (req, res) => {
   }
 };
 
-
 //  @desc Delete a product
 //  @access Private/Admin
-const deleteProductController = async (req , res) => {
-try {
-  const goalProduct = await ProductModel.findById(req.params.id);
-  if(goalProduct){
-    await goalProduct.deleteOne();
+const deleteProductController = async (req, res) => {
+  try {
+    const goalProduct = await ProductModel.findById(req.params.id);
+    if (goalProduct) {
+      await goalProduct.deleteOne();
+      res.status(200).json({
+        success: true,
+        error: false,
+        message: "Product deleted successfully",
+      });
+    } else {
+      res.status(404).json({
+        success: false,
+        error: true,
+        message: "Product not found",
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      error: true,
+      success: false,
+      message: `Internal Server Error ${error}`,
+    });
+  }
+};
+
+//  @desc Get all products with optional query filteres
+//  @access Public
+const getAllProductsController = async (req, res) => {
+  try {
+    const {
+      collection,
+      size,
+      color,
+      gender,
+      minPrice,
+      maxPrice,
+      sortBy,
+      search,
+      category,
+      material,
+      brand,
+      page,
+    } = req.query;
+    let query = {};
+    let limit = 10;
+    let pageNumber = page || 1;
+    // filter logic
+    if (collection && collection.toLowerCase() !== "all") {
+      query.collection = collection;
+    }
+    if (category && category.toLowerCase() !== "all") {
+      query.category = category;
+    }
+    if (material) {
+      query.material = { $in: material.split(",") };
+    }
+    if (brand) {
+      query.brand = { $in: brand.split(",") };
+    }
+    if (size) {
+      query.size = { $in: size.split(",") };
+    }
+    if (color) {
+      query.colors = { $in: [color] };
+    }
+    if (gender) {
+      query.gender = gender;
+    }
+    if (minPrice || maxPrice) {
+      query.price = {};
+      if (minPrice) query.price.gte = Number(minPrice);
+      if (maxPrice) query.price.gte = Number(maxPrice);
+    }
+    if (search) {
+      query.$or = [
+        { name: { $regex: search, $options: "i" } },
+        { description: { $regex: search, $options: "i" } },
+      ];
+    }
+    if (sortBy) {
+      switch (sortBy) {
+        case "priceAsc":
+          sort = { price: 1 };
+          break;
+        case "priceDesc":
+          sort = { price: -1 };
+          break;
+        case "popularity":
+          sort = { rating: -1 };
+          break;
+
+        default:
+          break;
+      }
+    }
+
+    //  Fetch Products And Apply Sorting And Limit
+    let products = await ProductModel.find(query)
+      .sort(sort)
+      .limit(Number(limit))
+      .skip((pageNumber - 1) * Number(limit));
+    const totalProducts = await ProductModel.countDocuments(query);
     res.status(200).json({
       success: true,
       error: false,
-      message: "Product deleted successfully",
-    })
-  }else{
-    res.status(404).json({
+      message: "Products fetched successfully",
+      data: products,
+      totalProducts: totalProducts,
+      totalPages: Math.ceil(totalProducts / limit),
+      currentPage: pageNumber,
+    });
+  } catch (error) {
+    res.status(500).json({
       success: false,
       error: true,
-      message: "Product not found",
-    })
+      message: `Internal Server Error ${error}`,
+    });
   }
-} catch (error) {
-  res.status(500).json({
-    error: true,
-    success: false,
-    message: `Internal Server Error ${error}`,
-  }) 
-}
-}
+};
 
 export {
   createNewProductController,
   updateProductController,
   deleteProductController,
+  getAllProductsController,
 };
