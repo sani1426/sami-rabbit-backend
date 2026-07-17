@@ -7,9 +7,7 @@ import UserModel from "./models/User.model.js";
 import  products from "./data/product.js";
 
 
-mongoose.connect(process.env.MONGO_URI , {
-    dbName : "sami-rabbit" ,
-})
+mongoose.connect(process.env.MONGO_URI )
 
 const seedData = async () => {
     try {
@@ -17,22 +15,22 @@ const seedData = async () => {
         await UserModel.deleteMany();
 
         // create default admin user
-        const createdUser = new UserModel({
-            name : "Admin" ,
-            email : "admin@example.com" ,
-            password : "admin123" ,
-            role : "Admin" ,
-        });
+        // const createdUser = new UserModel({
+        //     name : "Admin" ,
+        //     email : "admin@example.com" ,
+        //     password : "admin123" ,
+        //     role : "Admin" ,
+        // });
         //  assign the default user Id to each Product
-        const userId = createdUser._id;
+        // const userId = createdUser._id;
 
-        const  sampleProducts = products.map((product) => {
-            return {... product , user : userId}
-        })
+        // const  sampleProducts = products.map((product) => {
+        //     return {... product , user : userId}
+        // })
 
         // insert the products into the database
-        await ProductModel.insertMany(sampleProducts)
-        console.log("Data seeded successfully");
+        // await ProductModel.insertMany(sampleProducts)
+        // console.log("Data seeded successfully");
         process.exit(0);
 
     } catch (error) {

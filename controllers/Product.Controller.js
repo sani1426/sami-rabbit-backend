@@ -170,7 +170,7 @@ const deleteProductController = async (req, res) => {
 //  @access Public
 const getAllProductsController = async (req, res) => {
   try {
-    const {
+    let {
       collection,
       size,
       color,
@@ -186,7 +186,7 @@ const getAllProductsController = async (req, res) => {
     } = req.query;
     let query = {};
     let limit = 10;
-    let pageNumber = page || 1;
+    let pageNumber = Number(page) || 1;
     // filter logic
     if (collection && collection.toLowerCase() !== "all") {
       query.collection = collection;
@@ -211,8 +211,8 @@ const getAllProductsController = async (req, res) => {
     }
     if (minPrice || maxPrice) {
       query.price = {};
-      if (minPrice) query.price.gte = Number(minPrice);
-      if (maxPrice) query.price.gte = Number(maxPrice);
+      if (minPrice) query.price.$gte = Number(minPrice);
+      if (maxPrice) query.price.$lte = Number(maxPrice);
     }
     if (search) {
       query.$or = [
@@ -223,13 +223,13 @@ const getAllProductsController = async (req, res) => {
     if (sortBy) {
       switch (sortBy) {
         case "priceAsc":
-          sort = { price: 1 };
+          sortBy = { price: 1 };
           break;
         case "priceDesc":
-          sort = { price: -1 };
+          sortBy = { price: -1 };
           break;
         case "popularity":
-          sort = { rating: -1 };
+          sortBy = { rating: -1 };
           break;
 
         default:
@@ -239,7 +239,7 @@ const getAllProductsController = async (req, res) => {
 
     //  Fetch Products And Apply Sorting And Limit
     let products = await ProductModel.find(query)
-      .sort(sort)
+      .sort(sortBy)
       .limit(Number(limit))
       .skip((pageNumber - 1) * Number(limit));
     const totalProducts = await ProductModel.countDocuments(query);
@@ -261,9 +261,117 @@ const getAllProductsController = async (req, res) => {
   }
 };
 
+//  @desc Get a single product by ID
+//  @access Public
+const getProductDetailsController = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const product = await ProductModel.findById(id);
+    if (product) {
+      res.status(200).json({
+        success: true,
+        error: false,
+        message: "successfully fetch product details",
+        data: product,
+      });
+    } else {
+      res.status(404).json({
+        success: false,
+        error: true,
+        message: "product not found",
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: true,
+      message: `Internal Server Error ${error} `,
+    });
+  }
+};
+
+//  @dsc Retrieve similar products based on the current product ID
+//  @access Public
+const getSimilarProductsContoller = async (req , res) => {
+  try {
+    const {id} = req.params;
+    const product =  await ProductModel.findById(id)
+    if (!product) {
+      return res.status(404).json({
+        success : false ,
+        error : true ,
+        message : "product not found" , 
+      })
+    }
+    const similarProducts = await ProductModel.find({
+      _id : {$ne : id} ,  //Exclude the current product
+    category :  product.category,
+    gender : product.gender,
+    }).limit(4);
+    res.status(200).json({
+      success : true ,
+      error : false ,
+      message : "similar products fetched successfully" , 
+      data : similarProducts , 
+    })
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: true,
+      message: `Internal Server Error ${error} `,
+    });
+  }
+}
+
+//  @desc Retrieve product with highest rating
+//  @access Public
+const getBestSellerProductController = async (req , res) => {
+  try {
+    const bestSellerProduct = await ProductModel.find().sort({rating : -1}).limit(1);
+    res.status(200).json({
+      success : true ,
+      error : false ,
+      message : "best seller product fetched successfully" , 
+      data : bestSellerProduct , 
+    })
+    
+  } catch (error) {
+    res.status(500).json({
+      success : false ,
+      error : true ,
+      message : `Internal Server Error ${error} `, 
+    })
+  }
+}
+
+//  @desc Retrieve latest 8 products - Creation Date
+//  @access Public
+const getNewArrivalsController = async (req , res) => {
+  try {
+    const newArrivals = await ProductModel.find().sort({createdAt : -1}).limit(8);
+    res.status(200).json({
+      success : true ,
+      error : false ,
+      message: "new arrivals fetched successfully" , 
+      data : newArrivals
+    })
+  } catch (error) {
+     res.status(500).json({
+       success: false,
+       error: true,
+       message: `Internal Server Error ${error} `,
+     });
+  }
+}
+
 export {
   createNewProductController,
   updateProductController,
   deleteProductController,
   getAllProductsController,
+  getProductDetailsController,
+  getSimilarProductsContoller,
+  getBestSellerProductController,
+  getNewArrivalsController,
 };
