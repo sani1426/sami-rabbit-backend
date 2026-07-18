@@ -85,7 +85,7 @@ const productSchema = new mongoose.Schema(
     tags: [String],
     user: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "UserModel",
+      ref: "User",
       required: true,
     },
     metaTitle: {
