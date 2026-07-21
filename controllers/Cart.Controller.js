@@ -315,4 +315,5 @@ export {
   deleteProductFromCartController,
   getCartController,
   mergeCartController,
+  updateProductQuantityController,
 };

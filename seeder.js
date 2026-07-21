@@ -5,6 +5,8 @@ dotenv.config();
 import ProductModel from "./models/Product.model.js";
 import UserModel from "./models/User.model.js";
 import  products from "./data/product.js";
+import CartModel from "./models/Cart.model.js"; 
+
 
 
 mongoose.connect(process.env.MONGO_URI )
@@ -13,6 +15,7 @@ const seedData = async () => {
     try {
         await ProductModel.deleteMany();
         await UserModel.deleteMany();
+        await CartModel.deleteMany();
 
         // create default admin user
         // const createdUser = new UserModel({
