@@ -28,7 +28,7 @@ try {
         paymentStatus : "pending" ,
         isPaid : false ,
     })
-    console.log(req.user._id);
+
     res.status(201).json({ 
         success : true , 
         error : false ,
@@ -60,7 +60,7 @@ const updateCheckoutController = async (req , res) => {
                 message : "Checkout not found"
             })
         }
-        if (paymentStatus !== "paid") {
+        if (paymentStatus === "paid") {
             checkout.isPaid = true;
             checkout.paymentStatus = paymentStatus;
             checkout.paymentDetails = paymentDetails;
@@ -101,22 +101,22 @@ const finalizeCheckoutController = async (req , res) => {
                 message : "Checkout not found"
             })
         }
-        if (checkout.isPaid && !checkout.isFinalized) {
+        if (checkout.isPaid && !checkout.isFainalized) {
             const finalOrder = await OrderModel.create({
-                user : checkout.user ,
-                orderItems : checkout.orderItems ,
-                shippingAddress : checkout.shippingAddress ,
-                paymentMethod : checkout.paymentMethode ,
-                totalPrice : checkout.totalPrice ,
-                isPaid : true ,
-                paidAt : checkout.paidAt ,
-                isDelivered : false ,
-                paymentStatus : "paid" ,
-                paymentDetails : checkout.paymentDetails
-            })
+              user: checkout.user,
+              orderItems: checkout.checkoutItems,
+              shippingAddress: checkout.shippingAddress,
+              paymentMethod: checkout.paymentMethod,
+              totalPrice: checkout.totalPrice,
+              isPaid: true,
+              paidAt: checkout.paidAt,
+              isDelivered: false,
+              paymentStatus: "paid",
+              paymentDetails: checkout.paymentDetails,
+            });
 
             //  Mark the checkout as finalized
-            checkout.isFinalized = true;
+            checkout.isFainalized = true;
             checkout.fainalizedAt = Date.now();
             await checkout.save();
 
@@ -128,7 +128,7 @@ const finalizeCheckoutController = async (req , res) => {
                 message : "Checkout finalized and order created successfully",
                 data : finalOrder
             })
-        } else if (checkout.isFinalized) {
+        } else if (checkout.isFainalized) {
             res.status(400).json({
                 success : false , 
                 error : true ,
