@@ -105,8 +105,38 @@ const updateUserInfoController = async (req , res) => {
     }
 }
 
+
+//  @desc Delete a user (Admin only)
+//  @access Private/Admin
+const deleteUserController = async (req , res) => {
+try {
+    const user = await UserModel.findByIdAndDelete(req.params.id)
+    if (user) {
+        res.status(200).json({
+            success: true,
+            error: false,
+            message: "User deleted successfully" , 
+        }) 
+    } else {
+        res.status(404).json({
+            success: false,
+            error: true,
+            message: "User not found" , 
+        }) 
+    } 
+    
+} catch (error) {
+    res.status(500).json({
+        success: false,
+        error: true,
+        message: `Internal server error : ${error.message}` , 
+    })
+}
+}
+
 export {
   GetAllUsersController,
   createNewUserController,
   updateUserInfoController,
+  deleteUserController,
 };

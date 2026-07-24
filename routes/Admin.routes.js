@@ -4,6 +4,7 @@ import {
   GetAllUsersController,
   createNewUserController,
   updateUserInfoController,
+  deleteUserController,
 } from "../controllers/Admin.Controller.js";
 
 const adminRouter = express.Router();
@@ -23,5 +24,10 @@ adminRouter.post("/users", Protect , admin , createNewUserController);
 //  @desc Update user info (Admin only)
 //  @access Private/Admin
 adminRouter.put("/users/:id", Protect, admin, updateUserInfoController);
+
+//  @route DELETE /api/admin/users/:id
+//  @desc Delete a user (Admin only)
+//  @access Private/Admin
+adminRouter.delete("/users/:id", Protect, admin, deleteUserController);
 
 export default adminRouter;
