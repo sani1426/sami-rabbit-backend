@@ -8,6 +8,8 @@ import cartRouter from "./routes/Cart.routes.js";
 import checkoutRouter from "./routes/Checkout.routes.js";
 import orderRouter from "./routes/Order.routes.js";
 import upladRouter from "./routes/Upload.routes.js";
+import subscriberRouter from "./routes/Subscriber.routes.js";
+import adminRouter from "./routes/Admin.routes.js";
 dotenv.config();
 
 const app = express();
@@ -29,6 +31,10 @@ app.use("/api/checkout", checkoutRouter);
 app.use("/api/orders", orderRouter);
 
 app.use("/api/upload" , upladRouter)
+
+app.use("/api/subscribe" , subscriberRouter)
+
+app.use("/api/admin" , adminRouter)
 
 // run server
 const PORT = process.env.PORT || 3000;
