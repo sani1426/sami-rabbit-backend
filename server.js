@@ -9,7 +9,10 @@ import checkoutRouter from "./routes/Checkout.routes.js";
 import orderRouter from "./routes/Order.routes.js";
 import upladRouter from "./routes/Upload.routes.js";
 import subscriberRouter from "./routes/Subscriber.routes.js";
-import adminRouter from "./routes/Admin.routes.js";
+import adminUsersRouter from "./routes/AdminUsers.routes.js";
+import AdminProductsRouter from "./routes/AdminProducts.routes.js";
+import adminOrdersRouter from "./routes/AdminOrders.routes.js";
+
 dotenv.config();
 
 const app = express();
@@ -34,7 +37,15 @@ app.use("/api/upload" , upladRouter)
 
 app.use("/api/subscribe" , subscriberRouter)
 
-app.use("/api/admin" , adminRouter)
+app.use("/api/admin/users", adminUsersRouter);
+
+app.use("/api/admin/products", AdminProductsRouter);
+
+app.use("/api/admin/orders", adminOrdersRouter);
+
+app.get("/api" , (req , res) => {
+  res.json({message : "Welcome to Sami Rabbit Backend"})
+})
 
 // run server
 const PORT = process.env.PORT || 3000;
