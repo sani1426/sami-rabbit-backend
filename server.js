@@ -51,5 +51,8 @@ app.get("/api" , (req , res) => {
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   connectToDb();
+  if (connectToDb()) {
+    res.json({ message: "Server is running" });
+  }
   console.log(`Server is running on port ${PORT}`);
 });
