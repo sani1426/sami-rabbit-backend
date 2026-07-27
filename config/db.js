@@ -8,6 +8,7 @@ try {
     dbName: 'sami-rabbit',
   })
   console.log('Connected to MongoDB')
+  allert("connect")
 } catch (error) {
  console.error('Failed to connect to MongoDB', error)
  process.exit(1)  // Exit the process if connection fails
