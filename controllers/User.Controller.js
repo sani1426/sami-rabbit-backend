@@ -11,11 +11,58 @@ const registerController = async (req, res) => {
   try {
     const { name, email, password} = req.body;
     if(connectToDb()){
-      return res.status(201).json({
-        success: true,
-        error: false,
-        message: "user registered successfully",
-    })
+      if (!name || !email || !password) {
+        return res.status(400).json({
+          error: true,
+          success: false,
+          message: "all required fild must provide",
+        });
+      }
+      const already = await UserModel.findOne({ email });
+      if (already) {
+        return res.status(400).json({
+          error: true,
+          success: false,
+          message: "User Already exists with the same email! Please try again",
+        });
+      }
+
+      let hashedPassword = bcrypt.hashSync(password, 10);
+
+      const user = new UserModel({
+        name: name,
+        email: email,
+        password: hashedPassword,
+      });
+      const newUser = await user.save();
+      const payload = {
+        user: {
+          id: newUser._id,
+          name: newUser.name,
+          email: newUser.email,
+          role: newUser.role,
+        },
+      };
+      jwt.sign(
+        payload,
+        process.env.JWT_SECRET,
+        { expiresIn: process.env.JWT_EXPIRY },
+        (err, token) => {
+          if (err) throw err;
+          res.status(201).json({
+            success: true,
+            error: false,
+            message: "user registered successfully",
+            data: {
+              _id: newUser._id,
+              name: newUser.name,
+              email: newUser.email,
+              role: newUser.role,
+            },
+            token: token,
+          });
+        }
+      );
   }else {
     return res.status(500).json({
       error: true,
@@ -23,51 +70,7 @@ const registerController = async (req, res) => {
       message: `server error ${error}`,
     });
   }
-    // if (!name || !email || !password) {
-    //   return res.status(400).json({
-    //     error: true,
-    //     success: false,
-    //     message: "all required fild must provide",
-    //   });
-    // }
-    // const already = await UserModel.findOne({ email });
-    // if (already) {
-    //   return res.status(400).json({
-    //     error: true,
-    //     success: false,
-    //     message: "User Already exists with the same email! Please try again",
-    //   });
-    // }
-
-    // let hashedPassword = bcrypt.hashSync(password, 10);
-
-    // const user = new UserModel({
-    //   name: name,
-    //   email: email,
-    //   password: hashedPassword,
-    // });
-    // const newUser = await user.save();
-    // const payload = { user : {id : newUser._id , name : newUser.name , email : newUser.email , role : newUser.role }}
-    // jwt.sign(
-    //   payload,
-    //   process.env.JWT_SECRET,
-    //   { expiresIn: process.env.JWT_EXPIRY },
-    //   (err, token) => {
-    //     if (err) throw err;
-    //     res.status(201).json({
-    //       success: true,
-    //       error: false,
-    //       message: "user registered successfully",
-    //       data: {
-    //         _id: newUser._id,
-    //         name: newUser.name,
-    //         email: newUser.email,
-    //         role: newUser.role,
-    //       },
-    //       token: token,
-    //     });
-    //   }
-    // );
+   
   } catch (error) {
     res.status(500).json({
       error: true,
