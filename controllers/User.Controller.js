@@ -86,50 +86,45 @@ const registerController = async (req, res) => {
 const loginController = async (req , res) => {
 try {
   const {email , password} =req.body;
-  if (connectToDb()) {
- if (!email || !password) {
-   return res.status(400).json({
-     success: false,
-     error: true,
-     message: "all required fields must provide",
-   });
- }
- let user = await UserModel.findOne({ email });
- if (!user) {
-   return res.status(400).json({
-     success: false,
-     error: true,
-     message: "user not found",
-   });
- }
- const isMatch = bcrypt.compareSync(password, user.password);
- if (!isMatch) {
-   return res.status(400).json({
-     success: false,
-     error: true,
-     message: "password is incorrect",
-   });
- } else {
-   const payload = {
-     user: { id: user._id, name: user.name, email: user.name, role: user.role },
-   };
-   jwt.sign(
-     payload,
-     process.env.JWT_SECRET,
-     { expiresIn: process.env.JWT_EXPIRY },
-     (err, token) => {
-       if (err) throw err;
-       res.status(200).json({
-         success: true,
-         error: false,
-         message: "user successfully logged in",
-         token,
-       });
-     }
-   );
- }
+  if(!email || !password) {
+    return res.status(400).json({
+      success: false,
+      error : true ,
+      message : "all required fields must provide"
+    })
   }
- 
+  let user = await UserModel.findOne({email})
+  if(!user) {
+    return res.status(400).json({
+      success: false,
+      error : true ,
+      message : "user not found"
+    })
+  }
+  const isMatch = bcrypt.compareSync(password , user.password)
+  if (!isMatch) {
+    return res.status(400).json({
+      success: false,
+      error : true ,
+      message : "password is incorrect"
+    })
+  }else{
+    const payload = {user : {id : user._id , name : user.name , email : user.name , role : user.role}}
+    jwt.sign(
+      payload,
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.JWT_EXPIRY },
+      (err, token) => {
+        if (err) throw err;
+        res.status(200).json({
+          success: true,
+          error: false,
+          message: "user successfully logged in",
+          token,
+        });
+      }
+    );
+  }
 
 } catch (error) {
    res.status(500).json({
