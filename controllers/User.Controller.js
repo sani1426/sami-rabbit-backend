@@ -10,7 +10,7 @@ import connectToDb from "../config/db.js";
 const registerController = async (req, res) => {
   try {
     const { name, email, password} = req.body;
-    if(connectToDb()){
+ 
       if (!name || !email || !password) {
         return res.status(400).json({
           error: true,
@@ -63,13 +63,6 @@ const registerController = async (req, res) => {
           });
         }
       );
-  }else {
-    return res.status(500).json({
-      error: true,
-      success: false,
-      message: `server error ${error}`,
-    });
-  }
    
   } catch (error) {
     res.status(500).json({

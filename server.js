@@ -43,9 +43,6 @@ app.use("/api/admin/products", AdminProductsRouter);
 
 app.use("/api/admin/orders", adminOrdersRouter);
 
-app.get("/api" , (req , res) => {
-  res.json({message : "Welcome to Sami Rabbit Backend"})
-})
 
 // run server
 const PORT = process.env.PORT || 3000;
