@@ -16,6 +16,12 @@ const registerController = async (req, res) => {
         error: false,
         message: "user registered successfully",
     })
+  }else {
+    return res.status(500).json({
+      error: true,
+      success: false,
+      message: `server error ${error}`,
+    });
   }
     // if (!name || !email || !password) {
     //   return res.status(400).json({
