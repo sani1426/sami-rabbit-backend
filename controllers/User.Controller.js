@@ -12,7 +12,7 @@ const registerController = async (req, res) => {
     const { name, email, password} = req.body;
  
       if (!name || !email || !password) {
-        return res.status(400).json({
+         res.status(400).json({
           error: true,
           success: false,
           message: "all required fild must provide",
@@ -20,7 +20,7 @@ const registerController = async (req, res) => {
       }
       const already = await UserModel.findOne({ email });
       if (already) {
-        return res.status(400).json({
+         res.status(400).json({
           error: true,
           success: false,
           message: "User Already exists with the same email! Please try again",
@@ -80,7 +80,7 @@ const loginController = async (req , res) => {
 try {
   const {email , password} =req.body;
   if(!email || !password) {
-    return res.status(400).json({
+   res.status(400).json({
       success: false,
       error : true ,
       message : "all required fields must provide"
@@ -88,7 +88,7 @@ try {
   }
   let user = await UserModel.findOne({email})
   if(!user) {
-    return res.status(400).json({
+res.status(400).json({
       success: false,
       error : true ,
       message : "user not found"
@@ -96,7 +96,7 @@ try {
   }
   const isMatch = bcrypt.compareSync(password , user.password)
   if (!isMatch) {
-    return res.status(400).json({
+    res.status(400).json({
       success: false,
       error : true ,
       message : "password is incorrect"

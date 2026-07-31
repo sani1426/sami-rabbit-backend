@@ -32,7 +32,7 @@ const admin = async (req,res,next) => {
     if(req.user && req.user.role === "Admin") {
         next()
     }else{
-        return res.status(403).json({
+       res.status(403).json({
             success: false,
             error: true,
             message: "Not Authorization as admin "
