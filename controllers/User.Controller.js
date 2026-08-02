@@ -48,10 +48,11 @@ const registerController = async (req, res) => {
     const token = await jwt.sign(payload, process.env.JWT_SECRET, {
       expiresIn: "12h",
     });
-    res.status(201).cookie("token", token, tokenOption).json({
+    res.cookie("token", token, tokenOption);
+    res.status(201).json({
       error: false,
       success: true,
-      data: newUser,
+      data: tokenData,
       message: "success",
       token: token,
     });
@@ -112,6 +113,7 @@ const loginController = async (req, res) => {
         message: "Login successfully",
         error: false,
         success: true,
+        data : tokenData ,
         token: token,
       });
     }
@@ -122,6 +124,7 @@ const loginController = async (req, res) => {
       message: `server error ${error}`,
     });
   }
+  
 };
 
 // @desc Get Logged In user profile (Protected Route)
