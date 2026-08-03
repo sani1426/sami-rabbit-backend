@@ -21,20 +21,7 @@ const app = express();
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(
-  cors({
-    origin: "https://samirabbit.vercel.app",
-    credentials: true,
-    allowedHeaders: [
-      "Content-Type",
-      "Authorization",
-      "Cache-Control",
-      "Expires",
-      "Pragma",
-    ],
-    preflightContinue: false,
-  })
-);
+app.use(cors())
 
 //  routes
 app.use("/api/users", userRouter);
