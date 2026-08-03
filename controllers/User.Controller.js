@@ -31,7 +31,7 @@ const registerController = async (req, res) => {
       email: email,
       password: hashedPassword,
     });
-    const newUser = await user.save();
+     await user.save();
     const payload = {
       user: {
         id: user._id,
@@ -52,7 +52,11 @@ const registerController = async (req, res) => {
     res.status(201).json({
       error: false,
       success: true,
-      data: tokenData,
+      data: {
+        name : user?.name ,
+        email : user?.email ,
+        role : user?.role
+      },
       message: "success",
       token: token,
     });
@@ -113,7 +117,11 @@ const loginController = async (req, res) => {
         message: "Login successfully",
         error: false,
         success: true,
-        data : tokenData ,
+        data: {
+          name: user?.name,
+          email: user?.email,
+          role: user?.role,
+        },
         token: token,
       });
     }
