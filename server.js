@@ -12,6 +12,7 @@ import subscriberRouter from "./routes/Subscriber.routes.js";
 import adminUsersRouter from "./routes/AdminUsers.routes.js";
 import AdminProductsRouter from "./routes/AdminProducts.routes.js";
 import adminOrdersRouter from "./routes/AdminOrders.routes.js";
+import cookieParser from "cookie-parser";
 
 dotenv.config();
 
