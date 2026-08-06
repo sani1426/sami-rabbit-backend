@@ -38,7 +38,7 @@ productRouter.get("/", getAllProductsController);
 //  @desc Retrieve product with highest rating
 //  @access Public
 
-productRouter.get("/best-seller", getBestSellerProductController);
+productRouter.get("/best-seller",getBestSellerProductController);
 
 //  @route GET /api/products/new=arrivals
 //  @desc Retrieve latest 8 products - Creation Date
