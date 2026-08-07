@@ -328,7 +328,7 @@ const getSimilarProductsContoller = async (req , res) => {
 //  @access Public
 const getBestSellerProductController = async (req , res) => {
   try {
-    const bestSellerProduct = await ProductModel.find().sort({rating : -1}).limit(1);
+    const bestSellerProduct = await ProductModel.find().sort({rating : -1}).limit(5);
     res.status(200).json({
       success : true ,
       error : false ,
